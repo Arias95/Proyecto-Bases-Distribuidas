@@ -1,0 +1,32 @@
+<div class="modal-content">
+    <div class="modal-header">
+         <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" ng-click="cancel()"><i class="fa fa-close"></i></button>
+        </div>
+        <div align="center">
+            <h4>Nuevo Producto</h4>
+        </div>
+    </div>
+
+    <div class="modal-body"> 
+
+       		<div ng-class="className" >
+                <input type="text" class="form-control" placeholder="Nombre" ng-model="data.name" ng-change="verifyData('name')">
+            </div>
+
+            <div ng-class="classPrice" >
+                <input type="number" class="form-control" placeholder="Precio" ng-model="data.price" ng-change="verifyData('price')">
+            </div>
+            
+            <div align="center" ng-show="error">
+            	<label> <p><font color="red">Ingrese los datos solicitados</font></p></label>
+            </div>
+            
+            <div align="center" ng-show="!error">
+                <button type="button" class="btn btn-primary" ng-click="accept()">Crear producto</button>
+            </div>
+            
+    	</div>
+
+    </div>
+</div>

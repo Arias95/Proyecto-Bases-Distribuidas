@@ -1,0 +1,40 @@
+<div class="box">
+<br>
+    <div class="box-header" >
+        <div class="row">
+            <div class="col-sm-8">
+                <h1 class="box-title">Productos</h1>
+            </div>
+            <div class="col-sm-4">
+                 <button type="button" class="btn btn-block btn-info" ng-click="newProduct()">Nuevo Producto</button>
+            </div>
+        </div>
+        
+    </div>
+   
+    <!-- /.box-header -->
+    <div class="box-body">
+      <table id="tProducts" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>            
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="x in DataTable">
+                <td>{{x.name}}</td>
+                <td>{{x.price}}</td>
+            </tr>
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+    <!-- /.box-body -->
+  </div>

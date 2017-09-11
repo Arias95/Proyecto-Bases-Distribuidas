@@ -1,0 +1,52 @@
+<div class="box">
+<br>
+    <div class="box-header" >
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="box-title">Clientes</h3>
+            </div>
+            <div class="col-sm-4">
+                 <button type="button" class="btn btn-block btn-info" ng-click="newClient()">Nuevo Cliente</button>
+            </div>
+        </div>
+        
+    </div>
+   
+    <!-- /.box-header -->
+    <div class="box-body">
+      <table id="tClients" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="x in DataTable">
+                <td>
+                    <a data-toggle="tooltip" title="Nueva Venta">
+                        <button type="button" class="btn btn-default" ng-click="newOrder(x)"><i class="fa fa-reorder"></i></button>
+                    </a>
+                    {{x.name}}
+                </td>
+                <td>{{x.lname}}</td>
+                <td>{{x.phone}}</td>
+                <td>{{x.email}}</td>
+            </tr>
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Telefono</th>
+            <th>Email</th>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+    <!-- /.box-body -->
+  </div>

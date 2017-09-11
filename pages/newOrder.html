@@ -1,0 +1,106 @@
+<div class="box">
+<br>
+    <div class="box-header" >
+        <div class="row">
+            <div class="col-sm-11">
+                <br>
+                <h1 class="box-title">Nueva Orden</h1>
+            </div>
+            <div class="col-sm-1" align="right">
+                 <button type="button" class="btn btn-block btn-danger" ng-click="cancelOrder()">X</button>
+            </div>
+        </div>
+        
+    </div>
+   
+    <!-- /.box-header -->
+    <div class="box-body row">
+        <div class="col-sm-8">
+            <h5 class="box-title">Productos seleccionados</h5>
+        <br>
+          <table id="tOrder" class="table table-bordered table-striped"  ng-if="selectedProducts.length>0">
+            <thead>
+            <tr>
+                <th>Cantidad</th>
+                <th>Nombre</th>
+                <th>Precio</th> 
+                <th>
+                    Subtotal
+                    
+                </th>            
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in selectedProducts">
+                    <td>
+                        <div class="row">
+                            <div  class="col-sm-2">
+                                <a data-toggle="tooltip" title="Eliminar Producto">
+                                <button type="button" class="btn btn-danger" ng-click="deleteProduct(x)"><i class="fa fa-times"></i></button>
+                                </a>
+                            </div>
+                            <div  class="col-sm-4">
+                                <input type="number" class="form-control" placeholder="Cantidad" min=1 ng-model="x.quantity" ng-change="calculeteTotal()">
+                            </div>
+                        </div>
+                        
+                     </td>
+                    <td>{{x.name}}</td>
+                    <td>{{x.price}}</td>
+                    <td>{{x.price*x.quantity}}</td>
+                </tr>
+
+            </tbody>
+            </tfoot>
+          </table>
+        </div>
+
+    <!-- /.box-header -->
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h5 class="box-title">Productos a seleccionar</h5>
+                </div>
+                <div class="col-sm-4">
+                     <button type="button" class="btn btn-block btn-info" ng-click="newProduct()">+</button>
+                </div>
+            </div>
+
+          <table id="tProductsSelect" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>            
+            </tr>
+            </thead>
+            <tbody >
+                <tr ng-repeat="x in DataTableProducts" >
+                    <td>
+                        <a data-toggle="tooltip" title="Agregar Producto">
+                            <button type="button" class="btn btn-default" ng-click="addProduct(x)"><i class="fa fa-plus"></i></button>
+                        </a>
+                        {{x.name}}
+                    </td>
+                    <td>{{x.price}}</td>
+                </tr>
+
+            </tbody>
+          </table>
+        </div>
+    </div>
+
+        <br>
+        <div align="left">
+             <div align="center" ng-show="processFlag">
+                <h3>Total: {{total}}</h3>
+                <button type="button" class="btn btn-block btn-info" ng-click="process()" style="width: 20%">Procesar Orden</button>
+            </div>
+
+             <div align="center" ng-show="!processFlag">
+                <label> <p><font color="red">Seleccione al menos un producto</font></p></label>
+            </div>
+        </div>
+         <br> <br>
+    
+    <!-- /.box-body -->
+  </div>
