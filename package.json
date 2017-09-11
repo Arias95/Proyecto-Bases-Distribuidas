@@ -1,0 +1,23 @@
+{
+  "name": "proyecto-bases-distribuidas",
+  "version": "1.0.0",
+  "description": "Proyecto 1 Bases Avanzadas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arias95/Proyecto-Bases-Distribuidas.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arias95/Proyecto-Bases-Distribuidas/issues"
+  },
+  "homepage": "https://github.com/Arias95/Proyecto-Bases-Distribuidas#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "mongoose": "^4.11.11"
+  }
+}
