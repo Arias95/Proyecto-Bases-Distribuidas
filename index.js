@@ -1,8 +1,10 @@
 var express = require('express');
 var app = express();
 
-app.get('/', function(req, res){
-   res.send("Hello world!");
-});
+var mota = require('./src/test.js');
+var driver = require('./src/driver.js');
+
+app.use('/mota', mota);
+app.use('/driver', driver);
 
 app.listen(3000);
