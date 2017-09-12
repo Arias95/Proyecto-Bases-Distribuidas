@@ -72,7 +72,7 @@ Login function: Checks for the existence of a user with the details
 given.
 */
 router.post('/login', function(req, res) {
-    var loginInfo = req.body;
+    var loginInfo = req.query;
     console.log(loginInfo);
     dbSanJose.collection("Users").find({"Name" : loginInfo.Name,
                                         "Password" : loginInfo.Password})
@@ -116,7 +116,9 @@ router.post('/add', function(req, res) {
 
 router.post('/addClient', function(req, res) {
     var custInfo = req.query;
-    console.log(cusInfo);
-})
+    console.log(custInfo);
+    dbHeredia.collection("Clients").insert(custInfo);
+    res.json({"Success" : 1});
+});
 
 module.exports = router;
