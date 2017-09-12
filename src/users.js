@@ -23,37 +23,58 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // ======== ROUTES ========
+/*
+Login function: Checks for the existence of a user with the details
+given.
+*/
 router.post('/login', function(req, res) {
     var loginInfo = req.body;
 
-    if (loginInfo.Store == "SJ") {
+    if (loginInfo.Store == "SJ") { // Checks inside the SJ database.
         dbSanJose.collection("Users").find({"Name" : loginInfo.Name,
                                             "Password" : loginInfo.Password,
                                             "Store" : loginInfo.Store})
                                             .toArray(
-            function(error, result) {
+            function(error, result) { // No user found with the details given.
                 if (result.length == 0) {
                     res.json({"Result" : 0});
-                } else {
+                } else { // User found, return success indicator.
                     res.json({"Result" : 1});
                 }
             }
         );
-    } else if (loginInfo.Store == "Alajuela") {
+    } else if (loginInfo.Store == "Alajuela") { // Checks inside the Alajuela database.
         dbAlajuela.collection("Users").find({"Name" : loginInfo.Name,
                                             "Password" : loginInfo.Password,
                                             "Store" : loginInfo.Store})
                                             .toArray(
             function(error, result) {
-                if (result.length == 0) {
+                if (result.length == 0) { // No user found with the details given.
                     res.json({"Result" : 0});
-                } else {
+                } else { // User found, return success indicator.
                     res.json({"Result" : 1});
                 }
             }
         );
-    } else {
+    } else { // The user is asking for a store that doesn't exists.
         res.json({"Result" : 0});
+    }
+});
+
+/*
+Register function: Stores a new user in a given database.
+*/
+router.post('/add', function(req, res) {
+    var regInfo = req.body;
+
+    if (regInfo.Store == "SJ") {
+        dbSanJose.collection("Users").insert(regInfo);
+        res.json({"Success" : 1, "Name" : regInfo.Name, "Store" : regInfo.Store});
+    } else if (regInfo.Store == "Alajuela") {
+        dbAlajuela.collection("Users").insert(regInfo);
+        res.json({"Success" : 1, "Name" : regInfo.Name, "Store" : regInfo.Store});
+    } else {
+        res.json({"Success" : 0, "Name" : regInfo.Name, "Store" : regInfo.Store});
     }
 });
 
