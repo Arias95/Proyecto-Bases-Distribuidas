@@ -23,6 +23,44 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // ======== ROUTES ========
+
+router.get('/', function(req, res) {
+    var usersSJ;
+    var usersAlajuela;
+    dbSanJose.collection("Users").find().toArray(
+        function(error, result) {
+            usersSJ = result;
+            dbAlajuela.collection("Users").find().toArray(
+                function(error, result) {
+                    usersAlajuela = result;
+                    var total = usersSJ.concat(usersAlajuela);
+                    res.json(total);
+                }
+            );
+        }
+    );
+});
+
+
+router.get('/:store', function(req, res) {
+    var store = req.params.store;
+    if (store == "SJ") {
+        dbSanJose.collection("Users").find({"Store" : store}).toArray(
+            function(error, result) {
+                res.json(result);
+            }
+        );
+    } else if (store == "Alajuela") {
+        dbAlajuela.collection("Users").find({"Store" : store}).toArray(
+            function(error, result) {
+                res.json(result);
+            }
+        );
+    } else {
+        res.json([]);
+    }
+});
+
 /*
 Login function: Checks for the existence of a user with the details
 given.
