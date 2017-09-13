@@ -18,6 +18,11 @@ MongoClient.connect('mongodb://192.168.100.6:8051/SJ', function(err, db) {
   dbAdminSJ=db;
 });
 
+MongoClient.connect('mongodb://192.168.100.6:8051/Heredia', function(err, db) {
+  if(err) { return console.dir(err); }
+  dbAdminH=db;
+});
+
 /*var productSchema = mongoose.Schema({
     nombre : String,
     tienda : String,
@@ -46,6 +51,10 @@ router.post('/newProduct', function (req, res) {
     res.send("insertado!");
   }
   else {
+    var collection = dbAdminH.collection('Products');
+    collection.insert(newProduct);
+    console.log("inserting in sj")
+    res.send("insertado!");
 
   }
    /*

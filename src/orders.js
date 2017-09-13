@@ -27,22 +27,23 @@ router.post('/newOrder', function (req, res) {
   if (newOrder.store=='Alajuela'){
     console.log("inserting in alajuela")
     var collection = dbAdminA.collection('Orders');
+    newOrder.date=new Date( newOrder.date);
     collection.insert(newOrder);
     res.send("insertado!");
   }
   else if( newOrder.store=='SJ'  )  {
     var collection = dbAdminSJ.collection('Orders');
+    newOrder.date=new Date( newOrder.date);
     collection.insert(newOrder);
     console.log("inserting in sj")
     res.send("insertado!");
   }
-   /*
-   Falta almacenar en Heredia
-   */
+  else{
+
+
+  }
+
 });
-
-
-
 
 function retrieveData(idStore,callback){
   if (idStore=='Alajuela'){
@@ -66,7 +67,6 @@ function retrieveData(idStore,callback){
     callback(result);
     });
  }
-
   else {
 
   }
@@ -77,14 +77,15 @@ function callbackCollectionByDate(users,pDb,callback){
   for(i=0;i <users.length;i++ ){
     console.log('in user: ' + users[i].Name );
 
-    pDb.collection("Orders").find( {"client" :{"name": users[i].Name  } ,
-    "date":{ $gte: dateI, $lte: dateF  } }).toArray(function(err, result)   {
+    dbAdminA.collection("Orders").find( {"client" :{"name": users[i].Name  } ,
+    "date":{ $gte: new Date(dateI), $lte: new Date(dateF)  } } ).toArray(function(err, result)   {
     if (err) throw err;
-    console.log(result)
+    //console.log(result)
     var total=0;
     for (j=0;j<result.length;j++){
       total+=result[j].total;
     }
+    console.log(result);
     var resultToInsert= {name: "", "cantOrders":result.length, "orders":result,"total":total }
     resultQuery.push(resultToInsert);
     } );
@@ -108,17 +109,17 @@ function getCantOrdersbyDate(idStore, dateI, dateF, users  ,callback){
          finalArry[i].name=users[i].Name;
        }
        callback(finalArry)
-   }, 1000);
+   }, 2000);
      });
      setTimeout(function(){
 
-      }, 2000);
+     }, 4000);
 
   }
 
 
   else if( idStore=='SJ'){
-    var finalArry=[];
+    /*var finalArry=[];
      callbackCollectionByDate(users,dbAdminSJ,function(result){
        setTimeout(function(){
        finalArry=result;
@@ -130,7 +131,7 @@ function getCantOrdersbyDate(idStore, dateI, dateF, users  ,callback){
     });
     setTimeout(function(){
 
-     }, 2000);
+    }, 4000);*/
  }
   else {
 
@@ -166,8 +167,12 @@ function getUsers(idStore,callback){
 
 }
 
+/*
 router.get('/getOrder/:idStore', function (req, res) {
   idStore=req.params.idStore;
+  //console.log(req.query)
+  //console.log(req.body)
+
   dateI=req.body.dateI;
   dateF=req.body.dateF;
   name = req.body.name;
@@ -186,9 +191,37 @@ router.get('/getOrder/:idStore', function (req, res) {
 
   });
 
+});*/
 
+
+router.get('/getOrder/:idStore', function (req, res) {
+  console.log(req.body);
+  //console.log(req.body);
+
+  idStore=req.params.idStore;
+  dateI=req.body.dateI;
+  dateF=req.body.dateF;
+  //name = req.query.name;
+
+
+  console.log("dateI"+ dateI);
+
+  console.log("dateF"+ dateF);
+
+  var users;
+  getUsers(idStore, function(users) {
+
+    data=getCantOrdersbyDate(idStore , dateI, dateF ,users, function(data){
+    response ={};
+    response.data = data;
+    res.json(response);
+
+    });
+
+  });
 
 });
+
 
 
 
