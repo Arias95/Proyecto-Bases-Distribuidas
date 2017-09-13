@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var bodyParser = require("body-parser");
 
-var db = mongoose.connect('mongodb://192.168.100.5:8050/Alajuela');
+var db = mongoose.connect('mongodb://192.168.100.6:8050/Alajuela');
 
 var personSchema = mongoose.Schema({
     name : String,
