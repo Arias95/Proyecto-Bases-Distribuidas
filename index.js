@@ -7,7 +7,6 @@ var sales = require('./src/sales.js');
 var product = require('./src/products.js');
 var orders = require('./src/orders.js');
 
-app.use('/driver', driver);
 app.use('/product', product);
 app.use('/order', orders);
 app.use('/users', users);
