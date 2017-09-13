@@ -50,7 +50,7 @@ router.get('/', function(req, res) {
 });
 
 
-router.get('/:store', function(req, res) {
+router.get('/store/:store', function(req, res) {
     var store = req.params.store;
     if (store == "SJ") {
         dbSanJose.collection("Users").find({"Store" : store}).toArray(
@@ -119,7 +119,7 @@ router.post('/add', function(req, res) {
 // -------- CLIENTS --------
 
 router.get('/clients', function (req, res) {
-    dbHeredia.collection("Users").find().toArray(
+    dbHeredia.collection("Clients").find({}).toArray(
         function(error, result) {
             res.json(result);
         }
