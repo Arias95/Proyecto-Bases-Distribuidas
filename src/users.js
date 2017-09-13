@@ -7,6 +7,7 @@ var bodyParser = require("body-parser");
 // ======== DATABASE CONNECTIONS ========
 var dbSanJose;
 var dbAlajuela;
+var dbHeredia;
 
 MongoClient.connect(driver.SanJose, function(err, db) {
     if (err) { return console.dir(err) }
@@ -18,11 +19,18 @@ MongoClient.connect(driver.Alajuela, function(err, db) {
     dbAlajuela = db;
 });
 
+MongoClient.connect(driver.Heredia, function(err, db) {
+    if (err) { return console.dir(err) }
+    dbHeredia = db;
+});
+
 // ======== BODY PARSER INIT ========
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // ======== ROUTES ========
+
+// -------- ADMIN (USERS) --------
 
 router.get('/', function(req, res) {
     var usersSJ;
@@ -66,45 +74,37 @@ Login function: Checks for the existence of a user with the details
 given.
 */
 router.post('/login', function(req, res) {
-    var loginInfo = req.body;
-
-    if (loginInfo.Store == "SJ") { // Checks inside the SJ database.
-        dbSanJose.collection("Users").find({"Name" : loginInfo.Name,
-                                            "Password" : loginInfo.Password,
-                                            "Store" : loginInfo.Store})
-                                            .toArray(
-            function(error, result) { // No user found with the details given.
-                if (result.length == 0) {
-                    res.json({"Result" : 0});
-                } else { // User found, return success indicator.
-                    res.json({"Result" : 1});
-                }
+    var loginInfo = req.query;
+    console.log(loginInfo);
+    dbSanJose.collection("Users").find({"Name" : loginInfo.Name,
+                                        "Password" : loginInfo.Password})
+                                        .toArray(
+        function(error, result) {
+            if (result.length == 0) { // No user found with the details given.
+                dbAlajuela.collection("Users").find({"Name" : loginInfo.Name,
+                                                    "Password" : loginInfo.Password})
+                                                    .toArray(
+                    function(error, result) {
+                        if (result.length == 0) { // No user found with the details given.
+                            res.json({"Result" : 0});
+                        } else { // User found, return success indicator.
+                            res.json({"Result" : 1, "Name" : result[0].Name, "Store" : result[0].Store});
+                        }
+                    }
+                );
+            } else { // User found, return success indicator.
+                res.json({"Result" : 1, "Name" : result[0].Name, "Store" : result[0].Store});
             }
-        );
-    } else if (loginInfo.Store == "Alajuela") { // Checks inside the Alajuela database.
-        dbAlajuela.collection("Users").find({"Name" : loginInfo.Name,
-                                            "Password" : loginInfo.Password,
-                                            "Store" : loginInfo.Store})
-                                            .toArray(
-            function(error, result) {
-                if (result.length == 0) { // No user found with the details given.
-                    res.json({"Result" : 0});
-                } else { // User found, return success indicator.
-                    res.json({"Result" : 1});
-                }
-            }
-        );
-    } else { // The user is asking for a store that doesn't exists.
-        res.json({"Result" : 0});
-    }
+        }
+    );
 });
 
 /*
 Register function: Stores a new user in a given database.
 */
 router.post('/add', function(req, res) {
-    var regInfo = req.body;
-
+    var regInfo = req.query;
+    console.log(regInfo)
     if (regInfo.Store == "SJ") {
         dbSanJose.collection("Users").insert(regInfo);
         res.json({"Success" : 1, "Name" : regInfo.Name, "Store" : regInfo.Store});
@@ -115,5 +115,23 @@ router.post('/add', function(req, res) {
         res.json({"Success" : 0, "Name" : regInfo.Name, "Store" : regInfo.Store});
     }
 });
+
+// -------- CLIENTS --------
+
+router.get('/clients', function (req, res) {
+    dbHeredia.collection("Users").find().toArray(
+        function(error, result) {
+            res.json(result);
+        }
+    );
+});
+
+router.post('/addClient', function(req, res) {
+    var custInfo = req.query;
+    console.log(custInfo);
+    dbHeredia.collection("Clients").insert(custInfo);
+    res.json({"Success" : 1});
+});
+
 
 module.exports = router;
