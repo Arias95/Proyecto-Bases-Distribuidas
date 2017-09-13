@@ -30,6 +30,8 @@ router.use(bodyParser.json());
 
 // ======== ROUTES ========
 
+// -------- ADMIN (USERS) --------
+
 router.get('/', function(req, res) {
     var usersSJ;
     var usersAlajuela;
@@ -114,11 +116,22 @@ router.post('/add', function(req, res) {
     }
 });
 
+// -------- CLIENTS --------
+
+router.get('/clients', function (req, res) {
+    dbHeredia.collection("Users").find().toArray(
+        function(error, result) {
+            res.json(result);
+        }
+    );
+});
+
 router.post('/addClient', function(req, res) {
     var custInfo = req.query;
     console.log(custInfo);
     dbHeredia.collection("Clients").insert(custInfo);
     res.json({"Success" : 1});
 });
+
 
 module.exports = router;
