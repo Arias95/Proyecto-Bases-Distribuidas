@@ -41,23 +41,31 @@ router.use(bodyParser.json());
 function retrieveProducts(idTienda, prodName, callback) {
     if (idTienda == 'Alajuela') {
         console.log('retrieving data in alajuela');
-        dbAlajuela.collection("Products").find({"name" : prodName}).toArray(function(err, result) {
+        dbAlajuela.collection("Products").find({
+            "name": prodName
+        }).toArray(function(err, result) {
             if (err) throw err;
             callback(result);
         });
     } else if (idTienda == 'SJ') {
         console.log('retrieving data in alajuela');
-        dbSanJose.collection("Products").find({"name" : prodName}).toArray(function(err, result) {
+        dbSanJose.collection("Products").find({
+            "name": prodName
+        }).toArray(function(err, result) {
             if (err) throw err;
             callback(result);
         });
     } else if (idTienda == "all") {
         var productsSJ;
         var productsAlajuela;
-        dbSanJose.collection("Products").find({"name" : prodName}).toArray(function(err, result) {
+        dbSanJose.collection("Products").find({
+            "name": prodName
+        }).toArray(function(err, result) {
             if (err) throw err;
             productsSJ = result;
-            dbAlajuela.collection("Products").find({"name" : prodName}).toArray(function(err, result) {
+            dbAlajuela.collection("Products").find({
+                "name": prodName
+            }).toArray(function(err, result) {
                 if (err) throw err;
                 productsAlajuela = result;
                 var total = productsSJ.concat(productsAlajuela);
@@ -70,24 +78,55 @@ function retrieveProducts(idTienda, prodName, callback) {
 
 }
 
-function retrieveOrders(idTienda, callback) {
+function retrieveOrders(idTienda, iniDate, endDate, callback) {
+    console.log(iniDate);
     if (idTienda == 'Alajuela') {
-        dbAlajuela.collection("Orders").find({}).toArray(function(err, result) {
+        dbAlajuela.collection("Orders").find({
+            "date": {
+                $gte: new Date(iniDate),
+                $lte: new Date(endDate)
+            }
+        }).toArray(function(err, result) {
             if (err) throw err;
             callback(result);
         });
     } else if (idTienda == 'SJ') {
-        dbSanJose.collection("Orders").find({}).toArray(function(err, result) {
+        dbSanJose.collection("Orders").find({
+            "date": {
+                $gte: new Date(iniDate),
+                $lte: new Date(endDate)
+            }
+        }).toArray(function(err, result) {
+            if (err) throw err;
+            callback(result);
+        });
+    } else if (idTienda == "Heredia") {
+        dbHeredia.collection("Orders").find({
+            "date": {
+                $gte: new Date(iniDate),
+                $lte: new Date(endDate)
+            }
+        }).toArray(function(err, result) {
             if (err) throw err;
             callback(result);
         });
     } else if (idTienda == "all") {
         var ordersSJ;
         var ordersAlajuela;
-        dbSanJose.collection("Orders").find({}).toArray(function(err, result) {
+        dbSanJose.collection("Orders").find({
+            "date": {
+                $gte: new Date(iniDate),
+                $lte: new Date(endDate)
+            }
+        }).toArray(function(err, result) {
             if (err) throw err;
             ordersSJ = result;
-            dbAlajuela.collection("Orders").find({}).toArray(function(err, result) {
+            dbAlajuela.collection("Orders").find({
+                "date": {
+                    $gte: new Date(iniDate),
+                    $lte: new Date(endDate)
+                }
+            }).toArray(function(err, result) {
                 if (err) throw err;
                 ordersAlajuela = result;
                 var total = ordersSJ.concat(ordersAlajuela);
@@ -95,53 +134,35 @@ function retrieveOrders(idTienda, callback) {
             });
         });
     } else {
-
+        console.log("Failed");
     }
 
 }
 
-function byProductCallback(productName, callback) {
-    products = retrieveProducts("all", function(products) {
-
-    });
-}
-
 // ======== ROUTES ========
 
-/*router.get('/products/', function(req, res) {
-    data = retrieveProducts("all", function(data) {
-        response = {};
-        response.data = data;
-        res.json(response);
-
-    });
-});
-
-router.get('/orders/', function(req, res) {
-    data = retrieveOrders("all", function(data) {
-        response = {};
-        response.data = data;
-        res.json(response);
-
-    });
-});*/
-
-router.get('/report/:product', function(req, res) {
-    var productName = req.params.product;
-    data = retrieveOrders("all", function(data) {
+router.get('/report', function(req, res) {
+    var reportInfo = req.query;
+    console.log(reportInfo);
+    var dateI = reportInfo.dateI;
+    var dateF = reportInfo.dateF;
+    var productName = reportInfo.product;
+    var productStore = reportInfo.store;
+    //console.log(productStore);
+    data = retrieveOrders(productStore, dateI, dateF, function(data) {
         var orderArray = data;
         var totalSold = 0;
-        for (var i = 0 ; i < orderArray.length ; i++) {
+        for (var i = 0; i < orderArray.length; i++) {
             var products = orderArray[i].products;
-            for (var j = 0 ; j < products.length ; j++) {
-                console.log(products[j]);
+            for (var j = 0; j < products.length; j++) {
                 if (products[j].name == productName) {
                     totalSold += products[j].price;
-                    console.log(totalSold);
                 }
             }
         }
-        res.json({"total" : totalSold});
+        res.json({
+            "total": totalSold
+        });
     });
 })
 
