@@ -36,28 +36,7 @@ router.use(bodyParser.urlencoded({
 }));
 router.use(bodyParser.json());
 
-// ======== ROUTES ========
-
-/*
-function getProducts(res) {
-    console.log("Test2");
-    dbAlajuela.collection("Products").find({}).toArray({
-        function(error, result) {
-            console.log("test4");
-            getProductsAux(error);
-        }
-    });
-}
-function getProductsAux(res, Salida) {
-    console.log("Test3");
-    res.json(Salida);
-}
-
-router.get('/products', function(req, res) {
-    getProducts(res);
-});
-*/
-
+// ======== CALLBACK FUNCTIONS ========
 
 function retrieveData(idTienda, callback) {
     if (idTienda == 'Alajuela') {
@@ -94,12 +73,21 @@ function retrieveData(idTienda, callback) {
 
 }
 
+// ======== ROUTES ========
+
 router.get('/products/', function(req, res) {
     data = retrieveData("all", function(data) {
         response = {};
         response.data = data;
         res.json(response);
 
+    });
+});
+
+router.get('/byProduct', function(req, res) {
+
+    var products = retrieveData("all", function(data) {
+        res.send("Listo");
     });
 });
 
